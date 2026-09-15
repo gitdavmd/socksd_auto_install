@@ -27,6 +27,15 @@ The script automates the installation and configuration of Dante, user authentic
 - `firewalld`, if automatic firewall configuration is required
 - Internet access for package installation
 
+Summary of what each option does
+  Option	Behavior
+(no args)	Interactive install: asks port, user, password, sets up Dante, firewall, verifies listener.
+-uninstall	Stops/disables service, removes dante-server, deletes config and log, closes firewall ports. Does not delete auth users (safety).
+-adduser USER PASS	Creates a system user (or updates password if exists) for proxy authentication.
+-deluser USER	Deletes the proxy auth user from the system.
+-log [N]	Tails the last N lines (default 50) of /var/log/sockd.log. Falls back to journalctl if the file is missing.
+-whitelist=CIDR[:CIDR...]	Replaces the client pass block with a whitelist. Accepts : as separator. Example: -whitelist=1.2.3.0/24:5.6.7.8/32. Restarts service and rolls back on failure.
+
 ## Installation
 
 Clone the repository and make the script executable:
