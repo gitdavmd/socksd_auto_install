@@ -32,16 +32,73 @@ The script automates the installation and configuration of Dante, user authentic
 Clone the repository and make the script executable:
 
 ```bash
-git clone https://github.com/USERNAME/REPOSITORY.git
+git clone https://github.com/gitdavmd/REPOSITORY.git
 cd REPOSITORY
 chmod +x socks5.sh
 
-Security Note
-Only use this script on servers that you own or administer. Use the whitelist feature to restrict access to trusted IP addresses and avoid exposing the SOCKS5 port unnecessarily.
+**Usage**
+sudo ./socks5.sh
 
-Passwords provided directly through the -adduser command may temporarily appear in shell history or the process list. For sensitive environments, the interactive installation method is recommended.
+**Add or update a proxy user**
+sudo ./socks5.sh -adduser USERNAME PASSWORD
+If the user already exists, their password will be updated.
 
-License
+**Delete a proxy user**
+sudo ./socks5.sh -deluser USERNAME
+
+**View logs**
+Display the last 50 log lines:
+sudo ./socks5.sh -log
+
+**Configure the IP whitelist**
+Allow a single IP address:
+sudo ./socks5.sh -whitelist=1.2.3.4/32
+Allow an entire network:
+sudo ./socks5.sh -whitelist=1.2.3.0/24
+Allow multiple IP addresses or networks separated by ::
+sudo ./socks5.sh -whitelist=1.2.3.0/24:5.6.7.8/32
+The configuration is backed up automatically, and the Dante service is restarted after the whitelist is updated.
+
+**Uninstall Dante**
+sudo ./socks5.sh -uninstall
+
+The uninstall operation stops and disables the service, removes the Dante package, deletes configuration files and logs, and attempts to clean up firewall rules.
+Authentication users are not removed automatically.
+
+**Display help**
+sudo ./socks5.sh --help
+
+**Testing the Proxy**
+After installation, test the SOCKS5 proxy with curl:
+curl --socks5-basic \
+  -u USERNAME:PASSWORD \
+  -x socks5://SERVER_IP:1080 \
+  https://ifconfig.me
+
+Replace:
+
+USERNAME with the configured proxy username
+PASSWORD with the proxy password
+SERVER_IP with the server IP address
+1080 with the configured SOCKS5 port
+
+**Files Used**
+Depending on the Dante installation, the script may use:
+/etc/sockd.conf
+/etc/danted.conf
+/var/log/sockd.log
+
+Before modifying the configuration, the script creates timestamped backups such as:
+/etc/sockd.conf.bak.TIMESTAMP
+
+**Security Note**
+Only use this script on servers that you own or administer. Use the whitelist feature to restrict
+access to trusted IP addresses and avoid exposing the SOCKS5 port unnecessarily.
+
+Passwords provided directly through the -adduser command may temporarily appear in shell history
+or the process list. For sensitive environments, the interactive installation method is recommended.
+
+**License**
 Add the license you want to use for this project, such as the MIT License.
 
 
